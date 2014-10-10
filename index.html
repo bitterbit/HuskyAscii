@@ -1,0 +1,9 @@
+<script src="huskycompiler.js"></script>
+
+
+<script type="text/javascript">
+	var compiler = new HuskyCompiler();
+	var code = compiler.Compile('alert(GAL)');
+	console.log(code);
+	eval(code);
+</script>
