@@ -137,7 +137,7 @@ HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr){
 
 
 
-/*********** NAME REPLCAER  ***********/
+/*********** NAME REPLACER  ***********/
 
 function makeReplaceObj(names){
     return {
@@ -180,7 +180,7 @@ function makeReplaceObj(names){
     }
 }
 
-/*********** HELPERS ***********/
+/*********** STRINGS ***********/
 
 function format(format){
     var args=[]; for(a in arguments){args.push(arguments[a])};
