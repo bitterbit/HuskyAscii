@@ -1,6 +1,6 @@
 function HuskyCompiler(){
-	this.mainLetter = 'GAL';
-	this.seconderyLetter = 'NOAM';
+	this.mainLetter = 'A';
+	this.seconderyLetter = 'X';
 
 	this.dictionary = this.generateDictionary();
 	this.octalDictionary = (function(){var translate_arr=[]; for (i=0; i<200; i++){translate_arr.push(eval('"\\'+i+'"'));}; return translate_arr;})()
@@ -85,31 +85,31 @@ HuskyCompiler.prototype.getExpressionShortcut = function(str) {
 };
 
 HuskyCompiler.prototype.generateDictionary = function() {
-	M=+![];
-    M={
-        MMMM:(![]+'')[M],
-        SSS:M++,
-        MSMS:(![]+'')[M],
-        SSM:M++,
-        MSMM:({}+'')[M],
-        MMSM:(([][+[]])+'')[M],
-        SMS:M++,
-        SMM:M++,
-        MMMS:(![]+'')[M],
-        MSS:M++,
-        MMSS:({}+'')[M],
-        MSM:M++,
-        MMS:M++,
-        MMM:M++,
-        MSSS:M++,
-        MSSM:M++
+	_M=+![];
+    _M={
+        _M_M_M_M:(![]+'')[_M],
+        _S_S_S:_M++,
+        _M_S_M_S:(![]+'')[_M],
+        _S_S_M:_M++,
+        _M_S_M_M:({}+'')[_M],
+        _M_M_S_M:(([][+[]])+'')[_M],
+        _S_M_S:_M++,
+        _S_M_M:_M++,
+        _M_M_M_S:(![]+'')[_M],
+        _M_S_S:_M++,
+        _M_M_S_S:({}+'')[_M],
+        _M_S_M:_M++,
+        _M_M_S:_M++,
+        _M_M_M:_M++,
+        _M_S_S_S:_M++,
+        _M_S_S_M:_M++
     };
-    M.SM='\\';
-    M.SS='\'';
-    M.MM=(!![]+'')[M.SSM]+M.MMMS+(!![]+'')[M.SSS]+(!![]+'')[M.SMS]+(!![]+'')[M.SSM]+(([][+[]])+'')[M.SSM];
-    M.MS=M.MMSS+(({}+'')+'')[M.SSM]+(([][+[]])+'')[M.SSM]+(![]+'')[M.SMM]+(!![]+'')[M.SSS]+(!![]+'')[M.SSM]+(!![]+'')[M.SMS]+M.MMSS+(!![]+'')[M.SSS]+(({}+'')+'')[M.SSM]+(!![]+'')[M.SSM];
-    M.M=M.SSM[M.MS][M.MS];
-    return M;
+    _M._S_M='\\';
+    _M._S_S='\'';
+    _M._M_M=(!![]+'')[_M._S_S_M]+_M._M_M_M_S+(!![]+'')[_M._S_S_S]+(!![]+'')[_M._S_M_S]+(!![]+'')[_M._S_S_M]+(([][+[]])+'')[_M._S_S_M];
+    _M._M_S=_M._M_M_S_S+(({}+'')+'')[_M._S_S_M]+(([][+[]])+'')[_M._S_S_M]+(![]+'')[_M._S_M_M]+(!![]+'')[_M._S_S_S]+(!![]+'')[_M._S_S_M]+(!![]+'')[_M._S_M_S]+_M._M_M_S_S+(!![]+'')[_M._S_S_S]+(({}+'')+'')[_M._S_S_M]+(!![]+'')[_M._S_S_M];
+    _M._M=_M._S_S_M[_M._M_S][_M._M_S];
+    return _M;
 };
 
 HuskyCompiler.prototype.getDictionaryAsString = function() {
@@ -123,8 +123,8 @@ HuskyCompiler.prototype.getDictionaryAsString = function() {
 };
 
 HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr){
-	codeStr = codeStr.replace(/M/g, '{0}');
-    codeStr = codeStr.replace(/S/g, '{1}');
+	codeStr = codeStr.replace(/_M/g, '{0}');
+    codeStr = codeStr.replace(/_S/g, '{1}');
     codeStr = format(codeStr, this.mainLetter, this.seconderyLetter);
     return codeStr;
 };
