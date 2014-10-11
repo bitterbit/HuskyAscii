@@ -1,41 +1,10 @@
 function HuskyCompiler(){
-	c = this;
 	
 	// an object to make new names from the nameSet. used in putSymbolsInPlaceholders
-	this.renameObj = {
-		id : [],  // identification
-		incr : function () // creates a new name
-		{
-			for(var i = 0;;i++)
-			{
-				var ix = c.nameSet.indexOf(this.id[i])
-				if(ix == c.nameSet.length - 1)
-				{
-					this.id[i] = c.nameSet[0]
-				}
-				else
-				{
-					this.id[i] = c.nameSet[ix + 1]
-					break;
-				}
-			}
-			return this.id.join('');
-		} ,
-		dict : {}, // holds the already determined variable names
-		
-		replaceReply : function (match) { // used to reply to messages from the replace (in the next definition)
-			if(this.dict[match])
-				return this.dict[match]
-			else
-			{
-				var x = this.incr()
-				this.dict[match]=x;
-				return x;
-			}
-		}
-	}
 	
-	this.nameSet = ['a','b','c']
+	this.nameSet = ['A','S','C', 'I']
+    this.renameObj = makeReplaceObj(this.nameSet);
+
 	this.mainLetter = this.nameSet[0];
 	this.seconderyLetter = this.nameSet[1];
 
@@ -121,19 +90,21 @@ HuskyCompiler.prototype.getExpressionShortcut = function(str) {
 };
 
 HuskyCompiler.prototype.generateDictionary = function() {
-	_M=+![];
+    _M=+![];
+    _M_M=[];
+    _M_S='';
     _M={
-        _M_M_M_M:(![]+'')[_M],
+        _M_M_M_M:(!_M_M+_M_S)[_M],
         _S_S_S:_M++,
-        _M_S_M_S:(![]+'')[_M],
+        _M_S_M_S:(!_M_M+_M_S)[_M],
         _S_S_M:_M++,
-        _M_S_M_M:({}+'')[_M],
-        _M_M_S_M:(([][+[]])+'')[_M],
+        _M_S_M_M:({}+_M_S)[_M],
+        _M_M_S_M:((_M_M[+_M_M])+_M_S)[_M],
         _S_M_S:_M++,
         _S_M_M:_M++,
-        _M_M_M_S:(![]+'')[_M],
+        _M_M_M_S:(!_M_M+_M_S)[_M],
         _M_S_S:_M++,
-        _M_M_S_S:({}+'')[_M],
+        _M_M_S_S:({}+_M_S)[_M],
         _M_S_M:_M++,
         _M_M_S:_M++,
         _M_M_M:_M++,
@@ -142,8 +113,8 @@ HuskyCompiler.prototype.generateDictionary = function() {
     };
     _M._S_M='\\';
     _M._S_S='\'';
-    _M._M_M=(!![]+'')[_M._S_S_M]+_M._M_M_M_S+(!![]+'')[_M._S_S_S]+(!![]+'')[_M._S_M_S]+(!![]+'')[_M._S_S_M]+(([][+[]])+'')[_M._S_S_M];
-    _M._M_S=_M._M_M_S_S+(({}+'')+'')[_M._S_S_M]+(([][+[]])+'')[_M._S_S_M]+(![]+'')[_M._S_M_M]+(!![]+'')[_M._S_S_S]+(!![]+'')[_M._S_S_M]+(!![]+'')[_M._S_M_S]+_M._M_M_S_S+(!![]+'')[_M._S_S_S]+(({}+'')+'')[_M._S_S_M]+(!![]+'')[_M._S_S_M];
+    _M._M_M=(!!_M_M+_M_S)[_M._S_S_M]+_M._M_M_M_S+(!!_M_M+_M_S)[_M._S_S_S]+(!!_M_M+_M_S)[_M._S_M_S]+(!!_M_M+_M_S)[_M._S_S_M]+((_M_M[+_M_M])+_M_S)[_M._S_S_M];
+    _M._M_S=_M._M_M_S_S+(({}+_M_S)+_M_S)[_M._S_S_M]+((_M_M[+_M_M])+_M_S)[_M._S_S_M]+(!_M_M+_M_S)[_M._S_M_M]+(!!_M_M+_M_S)[_M._S_S_S]+(!!_M_M+_M_S)[_M._S_S_M]+(!!_M_M+_M_S)[_M._S_M_S]+_M._M_M_S_S+(!!_M_M+_M_S)[_M._S_S_S]+(({}+_M_S)+_M_S)[_M._S_S_M]+(!!_M_M+_M_S)[_M._S_S_M];
     _M._M=_M._S_S_M[_M._M_S][_M._M_S];
     return _M;
 };
@@ -160,16 +131,60 @@ HuskyCompiler.prototype.getDictionaryAsString = function() {
 
 
 HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr){
-	return codeStr.replace(/(_[SM])+/g, function(match){return c.renameObj.replaceReply(match)});
+    var ro = this.renameObj
+	return codeStr.replace(/(_[SM])+/g, function(match){return ro.replaceReply(match)});
 };
 
 
 
+/*********** NAME REPLCAER  ***********/
+
+function makeReplaceObj(names){
+    return {
+        id : [],  // identification
+        nameSet: names, // all the names that can assemble a variable name 
+        dict : {}, // holds the already determined variable names
+
+        // creates a new name
+        incr : function () 
+        {
+            for(var i = 0;;i++)
+            {
+                var ix = this.nameSet.indexOf(this.id[i])
+                if(ix == this.nameSet.length - 1)
+                {
+                    this.id[i] = this.nameSet[0]
+                }
+                else
+                {
+                    this.id[i] = this.nameSet[ix + 1]
+                    break;
+                }
+            }
+            return this.id.join('');
+        } ,
+        
+        // used to reply to messages from the replace (in the next definition)
+        replaceReply : function (match) { 
+            if(this.dict[match])
+            {
+                return this.dict[match]
+            }
+            else
+            {
+                var x = this.incr()
+                this.dict[match]=x;
+                return x;
+            }
+        }
+    }
+}
+
 /*********** HELPERS ***********/
 
 function format(format){
-	var args=[]; for(a in arguments){args.push(arguments[a])};
-	args = args.slice(1);
+    var args=[]; for(a in arguments){args.push(arguments[a])};
+    args = args.slice(1);
     return format.replace(/{(\d+)}/g, function(match, number) { 
       return typeof args[number] != 'undefined' ? args[number] : match;
     });
