@@ -2,6 +2,7 @@
 
 
 <script type="text/javascript">
+	GTAA = 33;
 	var compiler = new HuskyCompiler();
 	var thisisnotavarname = compiler.Compile("loaded=false;f=function(){loaded=true;alert('I am a talking :O');header=document.createElement('h1');header.innerText='ASCII Husky';document.body.appendChild(header);codeBox=document.createElement('div');codeBox.innerText=thisisnotavarname;codeBox.style='white-space: pre; font: 3px/3px monospace;';document.body.appendChild(codeBox);div=document.createElement('div');div.innerText='by Gal tash';document.body.appendChild(div)};window.onload=f;if(document.body != null && !loaded){f()}");
 	console.log(thisisnotavarname);
