@@ -1,6 +1,8 @@
 function HuskyCompiler(){
-	this.mainLetter = 'GAL';
-	this.seconderyLetter = 'NOAM';
+
+	this.nameSet = ['a','b','c']
+	this.mainLetter = this.nameSet[0];
+	this.seconderyLetter = this.nameSet[1];
 
 	this.dictionary = this.generateDictionary();
 	this.octalDictionary = (function(){var translate_arr=[]; for (i=0; i<200; i++){translate_arr.push(eval('"\\'+i+'"'));}; return translate_arr;})()
@@ -123,11 +125,52 @@ HuskyCompiler.prototype.getDictionaryAsString = function() {
 };
 
 HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr){
+	/*
 	codeStr = codeStr.replace(/M/g, '{0}');
     codeStr = codeStr.replace(/S/g, '{1}');
     codeStr = format(codeStr, this.mainLetter, this.seconderyLetter);
     return codeStr;
+	*/
+	
+	var that = this;
+	// the renaming object
+	var parseObj = {}
+	parseObj.id = [] // identification
+	parseObj.incr = function ()
+	{
+		for(var i = 0;;i++)
+		{
+			var ix = that.nameSet.indexOf(this.id[i])
+			if(ix == that.nameSet.length - 1)
+			{
+				this.id[i] = that.nameSet[0]
+			}
+			else
+			{
+				this.id[i] = that.nameSet[ix + 1]
+				break;
+			}
+		}
+		return this.id.join('');
+	}
+	// holds the already determined variable names
+	parseObj.dict = {}
+	 // used to reply to messages from the replace (in the next definition)
+	parseObj.replaceReply = function (match) {
+		if(this.dict[match])
+			return this.dict[match]
+		else
+		{
+			var x = this.incr()
+			this.dict[match]=x;
+			return x;
+		}
+	}
+	
+	return codeStr.replace(/[SM]+/g, function(match){return parseObj.replaceReply(match)});
 };
+
+
 
 /*********** HELPERS ***********/
 
