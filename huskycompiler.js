@@ -2,7 +2,7 @@ function HuskyCompiler(){
 	
 	// an object to make new names from the nameSet. used in putSymbolsInPlaceholders
 	
-	this.nameSet = ['A','S','C', 'I']
+	this.nameSet = ['A','I','C', 'S']
     this.renameObj = makeReplaceObj(this.nameSet);
 
 	this.mainLetter = this.nameSet[0];
