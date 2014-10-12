@@ -1,0 +1,4 @@
+HuskyAscii
+==========
+
+Obfuscate code
