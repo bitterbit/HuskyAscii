@@ -4,8 +4,9 @@
 <script type="text/javascript">
 	GTAA = 33;
 	var compiler = new HuskyCompiler();
-	var thisisnotavarname = compiler.Compile("loaded=false;f=function(){loaded=true;alert('I am a talking :O');header=document.createElement('h1');header.innerText='ASCII Husky';document.body.appendChild(header);codeBox=document.createElement('div');codeBox.innerText=thisisnotavarname;codeBox.style='white-space: pre; font: 3px/3px monospace;';document.body.appendChild(codeBox);div=document.createElement('div');div.innerText='by Gal tash';document.body.appendChild(div)};window.onload=f;if(document.body != null && !loaded){f()}");
+	var thisisnotavarname = compiler.Compile("hasWindowLoaded=false;myFunction=function(){hasWindowLoaded=true;alert('O: I am talking :O');pageHeader=document.createElement('h1');pageHeader.innerText='ASCII Husky';codeBox=document.createElement('div');codeBox.innerText=thisisnotavarname;codeBox.style='white-space: pre; font: 3px/3px monospace;';footer=document.createElement('div');footer.innerText='by galtashma';runCodeButton=document.createElement('button');runCodeButton.innerText='clickme';runCodeButton.onclick=function(){eval(thisisnotavarname)};document.body.appendChild(pageHeader);document.body.appendChild(runCodeButton);document.body.appendChild(codeBox);document.body.appendChild(footer);dPrint=function(s,i){setTimeout(function(){console.log(s)}, i)};delay=0;dPrint('the answer is 6!',delay+=800);dPrint('i know you just had to know that',delay+=1600);dPrint('come on, that hurt',delay+=4000);dPrint('OK, ill go',delay+=1600);dPrint('and dont forget, copyright to GAL and NOAM (;',delay+=1000);dPrint('bye bye',delay+=2500);};window.onload=myFunction;if(document.body != null && !hasWindowLoaded){myFunction()}");
 	console.log(thisisnotavarname);
+	console.log(thisisnotavarname.length)
 	eval(thisisnotavarname);
 </script>
 <div style="white-space:pre;font: 3px/3px monospace;">
