@@ -46,14 +46,21 @@ function HuskyCompiler(){
 	this.funcWrapper = format('{0}.{0}',this.mainLetter);
 	this.dictionaryString = this.getDictionaryAsString();
 	this.returnString = this.getExpression('return'); 
-	this.quote = format("{0}({1}+{2}+{3}+{2}+{2})()", this.funcWrapper, this.returnString, this.getExpression("'"), this.getExpression('\\'));
+	this.quote = format("{0}({1}+{2}+{3}+{2}+{2})()", this.funcWrapper, this.returnString, this.getExpression("'"), this.getExpression('\\')).replace("\n","");
 
 }
-
+/*
 HuskyCompiler.prototype.Compile = function(javascript_code) {
 	var mainCodeString = this.octalStringtoExpression(this.stringToOctal(javascript_code));
     var wrappedMainCode = format("{1}({1}({2}+{3}+{0}+{3})())()",mainCodeString, this.funcWrapper, this.returnString, this.quote);
     return this.dictionaryString+wrappedMainCode; 
+};
+*/
+HuskyCompiler.prototype.Compile/*WithFunc*/ = function(javascript_code) {
+	javascript_code += ";console.log(f+'f()')"
+	var mainCodeString = this.octalStringtoExpression(this.stringToOctal(javascript_code));
+	console.log(this.funcWrapper)
+    return format("f={1}(\"{4}{1}({1}({2}+{3}+{0}+{3})())()\");f()",mainCodeString, this.funcWrapper, this.returnString, this.quote, this.dictionaryString);
 };
 
 HuskyCompiler.prototype.getExpression = function(str) {
