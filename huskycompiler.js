@@ -13,18 +13,38 @@ function HuskyCompiler(){
     this.funcWrapper = format('{0}.{0}',this.mainLetter);
     this.dictionaryString = this.getDictionaryAsString();
     this.returnString = this.getExpression('return'); 
-    this.quote = format("{0}({1}+{2}+{3}+{2}+{2})()", this.funcWrapper, this.returnString, this.getExpression("'"), this.getExpression('\\'));
+    this.quote = this.seconderyLetter;
+	//format("{0}({1}+{2}+{3}+{2}+{2})()", this.funcWrapper, this.returnString, this.getExpression("'"), this.getExpression('\\'));
 
 }
 
 HuskyCompiler.prototype.Compile = function(javascript_code) {
-    var mainCodeString = this.octalStringtoExpression(this.stringToOctal(javascript_code));
+    var mainCodeString = this.getExpression(javascript_code);
     var wrappedMainCode = format("{1}({1}({2}+{3}+{0}+{3})())()",mainCodeString, this.funcWrapper, this.returnString, this.quote);
     return this.dictionaryString+wrappedMainCode; 
 };
 
+HuskyCompiler.prototype.CompileQuineable = function(javascript_code, quine_name) {
+    // How many Slashes do you need to replace a light bulb?
+	javascript_code = format("{2}=(\"{0}\"+f+';f()').replace(/fu.+{[^]/,'f={1}(\"').replace(/[^{)+]+}/g,'\")');", this.dictionaryString.replace(/'\\\\'/g, "\\'\\\\\\\\\\\\\\\\\\\\'").replace(/'\\''/g,"\\'\\\\\\\\\\'\\'") , this.funcWrapper, quine_name, this.getExpression("='\\\\'") , [this.quote, this.getExpression("\\"), this.quote, this.quote].join('+')) + javascript_code;
+    var mainCodeString = this.getExpression(javascript_code);
+    return format("{4}f={1}(\"({1}({1}({2}+{3}+{0}+{3})()))()\");f()",mainCodeString, this.funcWrapper, this.returnString, this.quote, this.dictionaryString);
+};
+
+HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_name, husky_dict)
+{
+	javascript_code = format("{2}=(\"{0}\"+f+';f()').replace(/fu.+{[^]/,'f={1}(\"').replace(/[^{)+]+}/g,'\")');", husky_dict, this.funcWrapper, quine_name, this.getExpression("='\\\\'") , [this.quote, this.getExpression("\\"), this.quote, this.quote].join('+')) + javascript_code;
+	//javascript_code = format("{2}=(\"{0}\"+f+';f()').replace({3},'\\\\\\\\').replace(/'''/,'\\'\\\\\\'\\'').replace(/fu.+{[^]/,'f={1}(\"').replace(/[^{)+]+}/,'\")');", husky_dict, this.funcWrapper, quine_name,this.getExpression("\\\\")) + javascript_code;
+    var mainCodeString = this.getExpression(javascript_code);
+    return format("{4}f={1}(\"({1}({1}({2}+{3}+{0}+{3})()))()\");f()",mainCodeString, this.funcWrapper, this.returnString, this.quote, this.dictionaryString);
+}
+
+/*
 HuskyCompiler.prototype.getExpression = function(str) {
-    return this._getExpression(str, ' ');
+	if(str.match(/ +/)){
+	    return this._getExpression(str, str);
+	}
+	return this._getExpression(str, ' ');
 }
 
 HuskyCompiler.prototype._getExpression = function(str, split) {
@@ -41,14 +61,36 @@ HuskyCompiler.prototype._getExpression = function(str, split) {
 
         if(expression != undefined){
             expressionParts.push(expression)
-        } else if( split==' '){
-            expressionParts.push(this._getExpression(part, ''))
+        } else if( split!=''){
+            expressionParts.push(this._getExpression(part, split.slice(1)) )
         } else {
             expressionParts.push(this.octalStringtoExpression(this.stringToOctal(part)))
         }
     }
     return this.putSymbolsInPlaceholders(expressionParts.join('+'));
 };
+*/
+
+HuskyCompiler.prototype.getExpression = function(str) {
+	var arr={};
+	var regex = '/';
+    for(i in this.dictionary){
+		var val = this.dictionary[i];
+		if(typeof(val) == "function") continue;
+        arr[val] = this.mainLetter+'.'+i;
+		if (val == '\\') val = '\\\\';
+		regex += val + '|';
+    }
+	regex += './g';
+	reg = eval(regex);
+	console.log(regex)
+	var that = this;
+	return this.putSymbolsInPlaceholders(str.replace(reg, function(match){
+		var expr = arr[match];
+		if(expr != undefined) return expr + '+';
+		else return that.octalStringtoExpression(that.stringToOctal(match)) + '+';
+	}).slice(0,-1));
+}
 
 HuskyCompiler.prototype.stringToOctal = function(str) {
     var translate_arr=this.octalDictionary;
@@ -89,7 +131,8 @@ HuskyCompiler.prototype.getExpressionShortcut = function(str) {
 };
 
 HuskyCompiler.prototype.generateDictionary = function() {
-    _M=+![];
+    _M=+[];
+	_S='\'';
     _M_M=[];
     _M_S='';
     _M={
@@ -106,12 +149,13 @@ HuskyCompiler.prototype.generateDictionary = function() {
         _M_M_S_S:({}+_M_S)[_M],
         _M_S_M:_M++,
         _M_M_S:_M++,
+		_S:([]+{})[_M],
         _M_M_M:_M++,
         _M_S_S_S:_M++,
         _M_S_S_M:_M++
     };
+	_M._S+=_M._S+_M._S+_M._S;
     _M._S_M='\\';
-    _M._S_S='\'';
     _M._M_M=(!!_M_M+_M_S)[_M._S_S_M]+_M._M_M_M_S+(!!_M_M+_M_S)[_M._S_S_S]+(!!_M_M+_M_S)[_M._S_M_S]+(!!_M_M+_M_S)[_M._S_S_M]+((_M_M[+_M_M])+_M_S)[_M._S_S_M];
     _M._M_S=_M._M_M_S_S+(({}+_M_S)+_M_S)[_M._S_S_M]+((_M_M[+_M_M])+_M_S)[_M._S_S_M]+(!_M_M+_M_S)[_M._S_M_M]+(!!_M_M+_M_S)[_M._S_S_S]+(!!_M_M+_M_S)[_M._S_S_M]+(!!_M_M+_M_S)[_M._S_M_S]+_M._M_M_S_S+(!!_M_M+_M_S)[_M._S_S_S]+(({}+_M_S)+_M_S)[_M._S_S_M]+(!!_M_M+_M_S)[_M._S_S_M];
     _M._M=_M._S_S_M[_M._M_S][_M._M_S];
@@ -119,11 +163,12 @@ HuskyCompiler.prototype.generateDictionary = function() {
 };
 
 HuskyCompiler.prototype.getDictionaryAsString = function() {
+	
     var func = this.generateDictionary+'';
     
     var lines = func.split('\n');
     lines = lines.slice(1, lines.length-2);
-    code = lines.join('').replace(/ +?/g, '');
+    code = lines.join('').replace(/ +/g, '').replace('\t', '').replace(/(\r\n|\n|\r)/gm,"");
     
     return this.putSymbolsInPlaceholders(code);
 };
@@ -189,3 +234,32 @@ function format(format){
       return typeof args[number] != 'undefined' ? args[number] : match;
     });
 }
+
+
+
+/*
+(0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]
+"functi"
+(0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on'
+"function"
+'f='+(0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on'
+"f=function"
+'f='+(0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on(){alert(1)}f()'
+"f=function(){alert(1)}f()"
+eval('f='+(0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on(){alert(1)}f()')
+SyntaxError: Unexpected identifier
+eval('f='+(0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on(){alert(1)};f()')
+undefined
+eval('f='+(0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on(){alert(1)};f()')
+undefined
+eval('f='+(0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on(){alert(1)}f()')
+SyntaxError: Unexpected identifier
+eval('f='+(0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on(){alert(1)} f()')
+SyntaxError: Unexpected identifier
+eval('f='+(0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on(){alert(1)};f()')
+undefined
+eval((0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on f(){alert(1)};f()')
+undefined
+eval((0[c][c]+'')[0]+(0[c][c]+'')[1]+(0[c][c]+'')[2]+(0[c][c]+'')[3]+(0[c][c]+'')[4]+(0[c][c]+'')[5]+'on f(){alert(1)}f()')
+undefined
+*/
