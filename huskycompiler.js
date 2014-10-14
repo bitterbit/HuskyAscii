@@ -36,7 +36,8 @@ HuskyCompiler.prototype.CompileQuineable = function(javascript_code, quine_name)
 HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_name, husky_dict)
 {
     // How many Slashes do you need to replace a light bulb?
-	javascript_code = format("{2}=(\"{0}\"+{3}+';{3}()').replace(/fu.+{[^]/,'{3}={1}(\"').replace(/[^{)+/]+}/,'\")');", husky_dict.replace(/'\\\\'/g, "\\'\\\\\\\\\\\\\\\\\\\\'").replace(/'\\''/g,"\\'\\\\\\\\\\'\\'"), this.funcWrapper, quine_name, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M")) + javascript_code;
+	javascript_code = format("{2}=(\"{0}\"+({3}+'').replace(/\\/\\*/g,'/*\\\\\\\\\\\\n')+';{3}()').replace(/fu.+{[^]/,'{3}={1}(\"').replace(/[^{)+/]+}/,'\")');", husky_dict.replace(/'\\\\'/g, "\\'\\\\\\\\\\\\\\\\\\\\'").replace(/'\\''/g,"\\'\\\\\\\\\\'\\'"), this.funcWrapper, quine_name, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M")) + javascript_code;
+	console.log(javascript_code)
 	//javascript_code = format("{2}=(\"{0}\"+f+';f()').replace({3},'\\\\\\\\').replace(/'''/,'\\'\\\\\\'\\'').replace(/fu.+{[^]/,'f={1}(\"').replace(/[^{)+]+}/,'\")');", husky_dict, this.funcWrapper, quine_name,this.getExpression("\\\\")) + javascript_code;
     var mainCodeString = this.getExpression(javascript_code);
     return format("{4}{5}={1}(\"({1}({1}({2}+{3}+{0}+{3})()))()\");{5}()",mainCodeString, this.funcWrapper, this.returnString, this.quote, this.dictionaryString, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M"));
@@ -84,7 +85,7 @@ HuskyCompiler.prototype.getExpression = function(str) {
 		if (val == '\\') val = '\\\\';
 		regex += val + '|';
     }
-	regex += './g';
+	regex += '[^]/g';
 	reg = eval(regex);
 	var that = this;
 	return this.putSymbolsInPlaceholders(str.replace(reg, function(match){
