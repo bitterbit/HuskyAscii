@@ -30,7 +30,7 @@ class CodePicBuilder():
             else:
                 p=part
             parts.append(p)
-
+        print parts
         return ''.join(parts)
 
     def put_code_in_placeholders(self, placeholders):

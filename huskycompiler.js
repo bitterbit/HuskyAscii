@@ -1,7 +1,7 @@
 function HuskyCompiler(){
     
     
-    this.nameSet = ['A','II','C', 'S']
+    this.nameSet = ['A','I','C', 'S']
     this.renameObj = makeReplaceObj(this.nameSet);
 
     this.mainLetter = this.nameSet[0];
@@ -25,18 +25,21 @@ HuskyCompiler.prototype.Compile = function(javascript_code) {
 };
 
 HuskyCompiler.prototype.CompileQuineable = function(javascript_code, quine_name) {
-    // How many Slashes do you need to replace a light bulb?
+	return this.CompileQuineableHusky(javascript_code, quine_name, this.dictionaryString);
+	/*
 	javascript_code = format("{2}=(\"{0}\"+f+';f()').replace(/fu.+{[^]/,'f={1}(\"').replace(/[^{)+]+}/g,'\")');", this.dictionaryString.replace(/'\\\\'/g, "\\'\\\\\\\\\\\\\\\\\\\\'").replace(/'\\''/g,"\\'\\\\\\\\\\'\\'") , this.funcWrapper, quine_name, this.getExpression("='\\\\'") , [this.quote, this.getExpression("\\"), this.quote, this.quote].join('+')) + javascript_code;
     var mainCodeString = this.getExpression(javascript_code);
     return format("{4}f={1}(\"({1}({1}({2}+{3}+{0}+{3})()))()\");f()",mainCodeString, this.funcWrapper, this.returnString, this.quote, this.dictionaryString);
+	*/
 };
 
 HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_name, husky_dict)
 {
-	javascript_code = format("{2}=(\"{0}\"+f+';f()').replace(/fu.+{[^]/,'f={1}(\"').replace(/[^{)+]+}/g,'\")');", husky_dict, this.funcWrapper, quine_name, this.getExpression("='\\\\'") , [this.quote, this.getExpression("\\"), this.quote, this.quote].join('+')) + javascript_code;
+    // How many Slashes do you need to replace a light bulb?
+	javascript_code = format("{2}=(\"{0}\"+{3}+';{3}()').replace(/fu.+{[^]/,'{3}={1}(\"').replace(/[^{)+/]+}/,'\")');", husky_dict.replace(/'\\\\'/g, "\\'\\\\\\\\\\\\\\\\\\\\'").replace(/'\\''/g,"\\'\\\\\\\\\\'\\'"), this.funcWrapper, quine_name, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M")) + javascript_code;
 	//javascript_code = format("{2}=(\"{0}\"+f+';f()').replace({3},'\\\\\\\\').replace(/'''/,'\\'\\\\\\'\\'').replace(/fu.+{[^]/,'f={1}(\"').replace(/[^{)+]+}/,'\")');", husky_dict, this.funcWrapper, quine_name,this.getExpression("\\\\")) + javascript_code;
     var mainCodeString = this.getExpression(javascript_code);
-    return format("{4}f={1}(\"({1}({1}({2}+{3}+{0}+{3})()))()\");f()",mainCodeString, this.funcWrapper, this.returnString, this.quote, this.dictionaryString);
+    return format("{4}{5}={1}(\"({1}({1}({2}+{3}+{0}+{3})()))()\");{5}()",mainCodeString, this.funcWrapper, this.returnString, this.quote, this.dictionaryString, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M"));
 }
 
 /*
@@ -83,7 +86,6 @@ HuskyCompiler.prototype.getExpression = function(str) {
     }
 	regex += './g';
 	reg = eval(regex);
-	console.log(regex)
 	var that = this;
 	return this.putSymbolsInPlaceholders(str.replace(reg, function(match){
 		var expr = arr[match];
@@ -136,6 +138,7 @@ HuskyCompiler.prototype.generateDictionary = function() {
     _M_M=[];
     _M_S='';
     _M={
+		_S_S:[],
         _M_M_M_M:(!_M_M+_M_S)[_M],
         _S_S_S:_M++,
         _M_S_M_S:(!_M_M+_M_S)[_M],
@@ -154,7 +157,8 @@ HuskyCompiler.prototype.generateDictionary = function() {
         _M_S_S_S:_M++,
         _M_S_S_M:_M++
     };
-	_M._S+=_M._S+_M._S+_M._S;
+	_M._S+=_M._S;
+	_M._S_S=_M._S+_M._S+_M._S+_M._S+_M._S;
     _M._S_M='\\';
     _M._M_M=(!!_M_M+_M_S)[_M._S_S_M]+_M._M_M_M_S+(!!_M_M+_M_S)[_M._S_S_S]+(!!_M_M+_M_S)[_M._S_M_S]+(!!_M_M+_M_S)[_M._S_S_M]+((_M_M[+_M_M])+_M_S)[_M._S_S_M];
     _M._M_S=_M._M_M_S_S+(({}+_M_S)+_M_S)[_M._S_S_M]+((_M_M[+_M_M])+_M_S)[_M._S_S_M]+(!_M_M+_M_S)[_M._S_M_M]+(!!_M_M+_M_S)[_M._S_S_S]+(!!_M_M+_M_S)[_M._S_S_M]+(!!_M_M+_M_S)[_M._S_M_S]+_M._M_M_S_S+(!!_M_M+_M_S)[_M._S_S_S]+(({}+_M_S)+_M_S)[_M._S_S_M]+(!!_M_M+_M_S)[_M._S_S_M];

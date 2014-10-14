@@ -2,25 +2,47 @@
 <script type="text/javascript">
     var compiler = new HuskyCompiler();
     //var thisisnotavarname = compiler.Compile("hasWindowLoaded=false;myFunction=function(){hasWindowLoaded=true;alert('O: I am talking :O');pageHeader=document.createElement('h1');pageHeader.innerText='ASCII Husky';codeBox=document.createElement('div');codeBox.innerText=thisisnotavarname;codeBox.style='white-space: pre; font: 3px/3px monospace;';footer=document.createElement('div');footer.innerText='by galtashma';runCodeButton=document.createElement('button');runCodeButton.innerText='clickme';runCodeButton.onclick=function(){eval(thisisnotavarname)};document.body.appendChild(pageHeader);document.body.appendChild(runCodeButton);document.body.appendChild(codeBox);document.body.appendChild(footer);dPrint=function(s,i){setTimeout(function(){console.log(s)}, i)};delay=0;dPrint('the answer is 6!',delay+=800);dPrint('i know you just had to know that',delay+=1600);dPrint('come on, that hurt',delay+=4000);dPrint('OK, ill go',delay+=1600);dPrint('and dont forget, copyright to GAL and NOAM (;',delay+=1000);dPrint('bye bye',delay+=2500);};window.onload=myFunction;if(document.body != null && !hasWindowLoaded){myFunction()}");
-    var thisisnotavarname = compiler.CompileQuineable("alert(/working/);console.log(quine)","quine");
-	var husky_dict = (function(){/*
-/*                                                                                                *\/A=+![]                                                                                                                      ;II=[/*
-                                                                                              *\/];C='';A={                                                                                                                  S:(!II+C)[/*
-                                                                                            *\/A],AA:A++,IIA:                                                                                                               (!II+C)[A],CA/*
-                                                                                          *\/:A++,SA:({}+C)[A                                                                                                             ],AII:((II[+II]) /*
-                                                                                        *\/+C)[A],IIII:A++,CII:                                                                                                         A++,SII:(!II+C)[A],AC/*
-                                                                                      *\/:A++,IIC:({}+C)[A],CC:                                                                                                       A++,SC:A++,AS:A++,IIS:A++/*
-                                                                                    *\/,CS:A++};A.SS='\\';A.AAA=                                                                                                     '\'';A.II=(!!II+C)[A.CA]+A./*
-                                                                                  *\/SII+(!!II+C)[A.AA]+(!!II+C)[A.                                                                                                 IIII]+(!!II+C)[A.CA]+((II[+II]/*
-                                                                                *\/)+C)[A.CA];A.C=A.IIC+(({}+C)+C)[A.                                                                                             CA]+((II[+II])+C)[A.CA]+(!II+C)[A./*
-                                                                               *\/CII]+(!!II+C)[A.     AA]+(!!II+C)[A.                                                                                           CA]+(!!II+C)[A.     IIII]+A.IIC+(!! /*
-                                                                             *\/II+C)[A.AA]+(({}        +C)+C)[A.CA]+(!                                                                                         !II+C)[A.CA];A.        A=A.CA[A.C][A.C/*
-                                                                           *\/];
-	*/}+'').split('\n').slice(1,-1).join('\\n');
-	console.log(husky_dict.length)
+	//var thisisnotavarname = compiler.CompileQuineable("hasWindowLoaded=false;f=function(){hasWindowLoaded=true;a=document.createElement('div');a.style.whiteSpace='pre';a.style.font='4px/4px monospace';a.innerText=quine;document.body.appendChild(a);console.log('One mans magic is another mans engineering - ROBERT A. HEINLEIN');console.log('by Proud Haskeller and Mr. Bitterbit');};window.onload = f;if(document.body && !hasWindowLoaded){f()}","quine");
+	var husky_dict = (function(){/*     
+/*
+                                                                                                *\/A=+[];                                                                                                                      I=   /*
+                                                                                              *\/'\'';C=[];                                                                                                                  S='';A={  /*
+                                                                                            *\/AA:[],IA:(!C+S                                                                                                               )[A],CA:A++, /*
+                                                                                          *\/SA:(!C+S)[A],AI:                                                                                                             A++,II:({}+S)[A],/*
+                                                                                        *\/CI:((C[+C])+S)[A],SI                                                                                                         :A++,AC:A++,IC:(!C+S)/*
+                                                                                      *\/[A],CC:A++,SC:({}+S)[A                                                                                                       ],AS:A++,IS:A++,I:([]+{  /*
+                                                                                    *\/})[A],CS:A++,SS:A++,AAA:A++}                                                                                                  ;   A.I+=A.I;A.AA=A.I+A.I+A./*
+                                                                                  *\/I+A.I+A.I;A.IAA='\\';A.C=(!!                                                                                                   C+S)[A.AI]+A.IC+(!!C+S)[A.CA]+/*
+                                                                                *\/(!!C+S)[A.SI]+(!!C+S)[A.AI]+((C[+C                                                                                             ])+S)[A.AI];A.S=A.SC+(({}+S)+S)[A./*
+                                                                               *\/AI]+((C[+C])+S)[A    .AI]+(!C+S)[A.AC                                                                                          ]+(!!C+S)[A.CA]+(   !!C+S)[A.AI]+(!!/*
+                                                                             *\/C+S)[A.SI]+A.SC+(       !!C+S)[A.CA]+((                                                                                         {}+S)+S)[A.AI]+        (!!C+S)[A.AI];A/*
+                                                                           *\/.A=A.AI[A.S][A.S]           ;
+	*/}+'').split('\n').slice(1,-1).join('\\\\n');
+	husky_dict = husky_dict.replace(/\*\\\//g, "*/");
+	console.log(husky_dict)
 	
-	//var thisisnotavarname = compiler.CompileQuineableHusky("alert(/working/);console.log(quine)","quine",husky_dict);
+	var thisisnotavarname = compiler.CompileQuineableHusky("hasWindowLoaded=false;f=function(){hasWindowLoaded=true;a=document.createElement('div');a.style.whiteSpace='pre';a.style.font='4px/4px monospace';a.innerText=quine;document.body.appendChild(a);console.log('One mans magic is another mans engineering - ROBERT A. HEINLEIN');console.log('by Proud Haskeller and Mr. Bitterbit');};window.onload = f;if(document.body && !hasWindowLoaded){f()}","quine",husky_dict);
     console.log(thisisnotavarname);
     console.log(thisisnotavarname.length)
     eval(thisisnotavarname);
+	
+	
+	function test(){
+		h=false;
+		d=document;
+		f=function(){
+			h=true;
+			a=d.createElement('div');
+			a.style.whiteSpace='pre';
+			a.style.font = '4px/4px monospace'
+			a.innerText=quine;
+			d.body.appendChild(a);
+			console.log('One man\'s \'magic\' is another man\'s engineering - ROBERT A. HEINLEIN');
+		}
+		window.onload = f;
+		if(d.body && !h){
+			f()
+		}
+	}
+	
 </script>
