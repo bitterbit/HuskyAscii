@@ -12,7 +12,7 @@ def main():
 
 	#take only a small part
 	text = ''.join(img_lines)
-	new_text = re.sub(r'(\s\s[^\{0}]*(\n)+[^\{0}]*\s\s)'.format(PLACE_HOLDER), r'/*\1*/', text)
+	new_text = re.sub(r'(\s\s[^\{0}]*(\n)+([^\{0}]*\s\s))'.format(PLACE_HOLDER), r'/*\\\n\3*/', text)
 
 	pic_builder = CodePicBuilder(code, new_text)
 	write_file('photoreplacer/output.txt',pic_builder.generate_pic_code())
@@ -40,8 +40,9 @@ class CodePicBuilder():
 			else:
 				p=part
 			parts.append(p)
-
-		return ''.join(parts)
+		result = ''.join(parts)
+		print 'length left:', len(''.join(self.code_exp)), '. code left:', ''.join(self.code_exp)
+		return result
 
 	def put_code_in_placeholders(self, placeholders):
 		if(placeholders.find(PLACE_HOLDER) == -1):
@@ -124,16 +125,19 @@ class CodePicBuilder():
 # 	raise Exception('replace to long index={2} replace_len={0} string_len={1}'.format(replace_len, len(string), start_index)) 
 
 def get_usless_expression(length):
-	if length == 1:
-		return ' '
-	elif length == 2:
-		return '  '
-	elif length == 3:
-		return '   '
-	elif length == 4:
-		return '/**/'
-	else:
+	if length >= 4:
 		return '/*{0}*/'.format('*'*(length-4))
+	return ' '*length
+	# if length == 1:
+	# 	return ' '
+	# elif length == 2:
+	# 	return '  '
+	# elif length == 3:
+	# 	return '   '
+	# elif length == 4:
+	# 	return '/**/'
+	# else:
+	# 	return '/*{0}*/'.format('*'*(length-4))
 
 # def get_max_length(string_arr):
 # 	maximum = len(string_arr[0])
