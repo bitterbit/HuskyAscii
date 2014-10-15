@@ -6,17 +6,18 @@ PLACE_HOLDER='#'
 counter=0
 
 def main():
-	img_lines = read_file('photoreplacer/input_img.txt')
-	code = ''.join(read_file('photoreplacer/input_code.txt'))
+    img_lines = read_file('photoreplacer/input_img.txt')
+    code = ''.join(read_file('photoreplacer/input_code.txt'))
 
 	text = ''.join(img_lines)
 	new_text = re.sub(r'(\s\s[^\{0}]*(\n)+([^\{0}]*\s\s))'.format(PLACE_HOLDER), r'/*\\\n\3*/', text)
 
-	pic_builder = CodePicBuilder(code, new_text)
-	write_file('photoreplacer/output.txt',pic_builder.generate_pic_code())
+    pic_builder = CodePicBuilder(code, new_text)
+    write_file('photoreplacer/output.txt',pic_builder.generate_pic_code())
 
 
 class CodePicBuilder():
+<<<<<<< HEAD
 	def __init__(self, code, pic_plcaeholder):
 		self.code_exp = self.get_code_expressions(code)
 		self.pic_parts = self.split_img_similar_chars(pic_plcaeholder)
@@ -84,11 +85,11 @@ def get_usless_expression(length):
 	return ' '*length
 
 def read_file(path):
-	with open(path, 'rb') as f:
-		return f.readlines()
+    with open(path, 'rb') as f:
+        return f.readlines()
 
 def write_file(path, text):
-	with open(path, 'wb') as f:
-		f.write(text)
+    with open(path, 'wb') as f:
+        f.write(text)
 
 main()

@@ -1,54 +1,53 @@
 function HuskyCompiler(){
-	
-	// an object to make new names from the nameSet. used in putSymbolsInPlaceholders
-	
-	this.nameSet = ['A','II','C', 'S']
+    
+    
+    this.nameSet = ['A','II','C', 'S']
     this.renameObj = makeReplaceObj(this.nameSet);
 
-	this.mainLetter = this.nameSet[0];
-	this.seconderyLetter = this.nameSet[1];
+    this.mainLetter = this.nameSet[0];
+    this.seconderyLetter = this.nameSet[1];
 
-	this.dictionary = this.generateDictionary();
-	this.octalDictionary = (function(){var translate_arr=[]; for (i=0; i<200; i++){translate_arr.push(eval('"\\'+i+'"'));}; return translate_arr;})()
+    this.dictionary = this.generateDictionary();
+    this.octalDictionary = (function(){var translate_arr=[]; for (i=0; i<200; i++){translate_arr.push(eval('"\\'+i+'"'));}; return translate_arr;})()
 
-	this.funcWrapper = format('{0}.{0}',this.mainLetter);
-	this.dictionaryString = this.getDictionaryAsString();
-	this.returnString = this.getExpression('return'); 
-	this.quote = format("{0}({1}+{2}+{3}+{2}+{2})()", this.funcWrapper, this.returnString, this.getExpression("'"), this.getExpression('\\'));
+    this.funcWrapper = format('{0}.{0}',this.mainLetter);
+    this.dictionaryString = this.getDictionaryAsString();
+    this.returnString = this.getExpression('return'); 
+    this.quote = format("{0}({1}+{2}+{3}+{2}+{2})()", this.funcWrapper, this.returnString, this.getExpression("'"), this.getExpression('\\'));
 
 }
 
 HuskyCompiler.prototype.Compile = function(javascript_code) {
-	var mainCodeString = this.octalStringtoExpression(this.stringToOctal(javascript_code));
+    var mainCodeString = this.octalStringtoExpression(this.stringToOctal(javascript_code));
     var wrappedMainCode = format("{1}({1}({2}+{3}+{0}+{3})())()",mainCodeString, this.funcWrapper, this.returnString, this.quote);
     return this.dictionaryString+wrappedMainCode; 
 };
 
 HuskyCompiler.prototype.getExpression = function(str) {
-	return this._getExpression(str, ' ');
+    return this._getExpression(str, ' ');
 }
 
 HuskyCompiler.prototype._getExpression = function(str, split) {
-	var parts = str.split(split);
-	var expressionParts = []
+    var parts = str.split(split);
+    var expressionParts = []
 
-	for(index in parts){
-		var part = parts[index]
-		if(index != parts.length-1){
-			part += split;
-		}
+    for(index in parts){
+        var part = parts[index]
+        if(index != parts.length-1){
+            part += split;
+        }
 
-		expression = this.getExpressionShortcut(part);
+        expression = this.getExpressionShortcut(part);
 
-		if(expression != undefined){
-			expressionParts.push(expression)
-		} else if( split==' '){
-			expressionParts.push(this._getExpression(part, ''))
-		} else {
-			expressionParts.push(this.octalStringtoExpression(this.stringToOctal(part)))
-		}
-	}
-	return this.putSymbolsInPlaceholders(expressionParts.join('+'));
+        if(expression != undefined){
+            expressionParts.push(expression)
+        } else if( split==' '){
+            expressionParts.push(this._getExpression(part, ''))
+        } else {
+            expressionParts.push(this.octalStringtoExpression(this.stringToOctal(part)))
+        }
+    }
+    return this.putSymbolsInPlaceholders(expressionParts.join('+'));
 };
 
 HuskyCompiler.prototype.stringToOctal = function(str) {
@@ -63,11 +62,11 @@ HuskyCompiler.prototype.stringToOctal = function(str) {
 };
 
 HuskyCompiler.prototype.octalStringtoExpression = function(octalStr) {
-	var dict=this.dictionary;
+    var dict=this.dictionary;
     var arr={};
 
     for (i in dict) {
-    	arr[dict[i]] = format('{0}.{1}',this.mainLetter,this.putSymbolsInPlaceholders(i+''));
+        arr[dict[i]] = format('{0}.{1}',this.mainLetter,this.putSymbolsInPlaceholders(i+''));
     } 
 
     chars = [];
@@ -84,7 +83,7 @@ HuskyCompiler.prototype.getExpressionShortcut = function(str) {
     var dict = this.dictionary;
     var arr={}; 
     for(i in dict){
-    	arr[dict[i]] = this.mainLetter+'.'+i;
+        arr[dict[i]] = this.mainLetter+'.'+i;
     } 
     return arr[str];
 };
@@ -132,13 +131,14 @@ HuskyCompiler.prototype.getDictionaryAsString = function() {
 
 HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr){
     var ro = this.renameObj
-	return codeStr.replace(/(_[SM])+/g, function(match){return ro.replaceReply(match)});
+    return codeStr.replace(/(_[SM])+/g, function(match){return ro.replaceReply(match)});
 };
 
 
 
 /*********** NAME REPLACER  ***********/
 
+// an object used to make new names from the nameSet.
 function makeReplaceObj(names){
     return {
         id : [],  // identification
