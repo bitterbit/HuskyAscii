@@ -17,7 +17,6 @@ def main():
 
 
 class CodePicBuilder():
-<<<<<<< HEAD
 	def __init__(self, code, pic_plcaeholder):
 		self.code_exp = self.get_code_expressions(code)
 		self.pic_parts = self.split_img_similar_chars(pic_plcaeholder)
