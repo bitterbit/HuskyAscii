@@ -82,16 +82,6 @@ def get_usless_expression(length):
 	if length >= 4:
 		return '/*{0}*/'.format('*'*(length-4))
 	return ' '*length
-	# if length == 1:
-	# 	return ' '
-	# elif length == 2:
-	# 	return '  '
-	# elif length == 3:
-	# 	return '   '
-	# elif length == 4:
-	# 	return '/**/'
-	# else:
-	# 	return '/*{0}*/'.format('*'*(length-4))
 
 def read_file(path):
 	with open(path, 'rb') as f:
