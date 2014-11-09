@@ -23,10 +23,12 @@ HuskyCompiler.prototype.Compile = function(javascript_code) {
     return this.dictionaryString+wrappedMainCode; 
 };
 
+// compile javascript_code in a way that the code itself is contained in the variable quine_name to be accessed by the code.
 HuskyCompiler.prototype.CompileQuineable = function(javascript_code, quine_name) {
 	return this.CompileQuineableHusky(javascript_code, quine_name, this.dictionaryString);
 };
 
+// compile quineably using a predefined dict
 HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_name, husky_dict)
 {
     // How many Slashes do you need to replace a light bulb?
@@ -38,12 +40,14 @@ HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_
 
 HuskyCompiler.prototype.getExpression = function(str) {
 	var arr={};
+	
+	// a regex that finds all the precalculated strings in the given strings
 	var regex = '/';
     for(var i in this.dictionary){
 		var val = this.dictionary[i];
-		if(typeof(val) == "function") continue;
+		if(typeof(val) == "function") continue; // we do not want `function(){ ... }` in our regex
         arr[val] = this.mainLetter+'.'+i;
-		if (val == '\\') val = '\\\\';
+		if (val == '\\') val = '\\\\'; // escaping
 		regex += val + '|';
     }
 	regex += '[^]/g';
@@ -94,6 +98,7 @@ HuskyCompiler.prototype.getExpressionShortcut = function(str) {
     return arr[str];
 };
 
+// the dictionary ; used both in the compiled code (by getDictionaryAsString()) and in the compiler itself
 HuskyCompiler.prototype.generateDictionary = function() {
     _M=+[];
 	_S='\'';
@@ -149,11 +154,11 @@ HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr){
 
 /*********** NAME REPLACER  ***********/
 
-// an object used to make new names from the nameSet.
+// an object used to make names using only the given nameset
 function makeReplaceObj(names){
     return {
         id : [],  // identification
-        nameSet: names, // all the names that can assemble a variable name 
+        nameSet: names, // all the names that will be used to assemble variable names 
         dict : {}, // holds the already determined variable names
 
         // creates a new name
@@ -175,7 +180,7 @@ function makeReplaceObj(names){
             return this.id.join('');
         } ,
         
-        // used to reply to messages from the replace (in the next definition)
+        // replaces an identifier with a new identifier using only the nameSet ; it returns the same identifier when given the same identifier (by storing past calls)
         replaceReply : function (match) { 
             if(this.dict[match])
             {
