@@ -9,8 +9,8 @@ def main():
     img_lines = read_file('photoreplacer/input_img.txt')
     code = ''.join(read_file('photoreplacer/input_code.txt'))
 
-    text = ''.join(img_lines)
-    new_text = re.sub(r'(\s\s[^\{0}]*(\n)+[^\{0}]*\s\s)'.format(PLACE_HOLDER), r'/*\1*/', text)
+	text = ''.join(img_lines)
+	new_text = re.sub(r'(\s\s[^\{0}]*(\n)+([^\{0}]*\s\s))'.format(PLACE_HOLDER), r'/*\\\n\3*/', text)
 
     pic_builder = CodePicBuilder(code, new_text)
     write_file('photoreplacer/output.txt',pic_builder.generate_pic_code())
@@ -78,16 +78,9 @@ class CodePicBuilder():
 
 
 def get_usless_expression(length):
-    if length == 1:
-        return ' '
-    elif length == 2:
-        return '  '
-    elif length == 3:
-        return '   '
-    elif length == 4:
-        return '/**/'
-    else:
-        return '/*{0}*/'.format('*'*(length-4))
+	if length >= 4:
+		return '/*{0}*/'.format('*'*(length-4))
+	return ' '*length
 
 def read_file(path):
     with open(path, 'rb') as f:
