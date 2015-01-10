@@ -1,14 +1,11 @@
 function HuskyCompiler(){
-    
-    
-    this.nameSet = ['A','I','C', 'S']
-    this.renameObj = makeReplaceObj(this.nameSet);
+    this.nameSet = ['A','I','C','S']
+    this.renameObj = Renamer(this.nameSet);
 
     this.mainLetter = this.nameSet[0];
     this.seconderyLetter = this.nameSet[1];
 
     this.dictionary = this.generateDictionary();
-    this.octalDictionary = (function(){var translate_arr=[]; for (i=0; i<200; i++){translate_arr.push(eval('"\\'+i+'"'));}; return translate_arr;})()
 
     this.funcWrapper = format('{0}.{0}',this.mainLetter);
     this.dictionaryString = this.getDictionaryAsString();
@@ -16,6 +13,7 @@ function HuskyCompiler(){
     this.quote = this.seconderyLetter;
 
 }
+
 
 HuskyCompiler.prototype.Compile = function(javascript_code) {
     var mainCodeString = this.getExpression(javascript_code);
@@ -38,10 +36,12 @@ HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_
     return format("{4}{5}={1}(\"({1}({1}({2}+{3}+{0}+{3})()))()\");{5}()",mainCodeString, this.funcWrapper, this.returnString, this.quote, this.dictionaryString, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M"));
 }
 
+// father function to get an obfuscated expression.
+// converts js expression, as alert, to its equivelent obfuscated value. 
 HuskyCompiler.prototype.getExpression = function(str) {
 	var arr={};
 	
-	// a regex that finds all the precalculated strings in the given strings
+	// building a regex that finds all the precalculated strings in the given strings
 	var regex = '/';
     for(var i in this.dictionary){
 		var val = this.dictionary[i];
@@ -51,32 +51,45 @@ HuskyCompiler.prototype.getExpression = function(str) {
 		regex += val + '|';
     }
 	regex += '[^]/g';
+    // run regex
 	reg = eval(regex);
+
 	var that = this;
 	return this.putSymbolsInPlaceholders(str.replace(reg, function(match){
 		var expr = arr[match];
-		if(expr != undefined) return expr + '+';
-		else return that.octalStringtoExpression(that.stringToOctal(match)) + '+';
+		if(expr != undefined) 
+            return expr + '+';
+		else 
+            return that.octalStringtoExpression(that.stringToOctal(match)) + '+';
 	}).slice(0,-1));
 }
 
+// converts a string to it octal represantation 
+// for example: 'H' => '\110' 
 HuskyCompiler.prototype.stringToOctal = function(str) {
-    var translate_arr=this.octalDictionary;
-    var msg = ''
     
-    for(index in str){
-        var ch = str[index]
-        msg += '\\'+translate_arr.indexOf(ch);
+    function decToOctal(decimal){
+        if (decimal < 0)
+            decimal = 0xFFFFFFFF + decimal + 1;
+        return parseInt(decimal, 10).toString(8)
     }
+    
+    var msg = ''
+    for(index in str){
+        msg += '\\'+decToOctal(str[index].charCodeAt(0));
+    }
+
     return msg
 };
 
+// converts octal string to obfuscated expression for example, if the dictionary was A={B:'\\', AB:'1', BB:'0'} 
+// then: '\110' => 'A.B+A.AB+A.AB+A.BB'
 HuskyCompiler.prototype.octalStringtoExpression = function(octalStr) {
     var dict=this.dictionary;
     var arr={};
 
     for (i in dict) {
-        arr[dict[i]] = format('{0}.{1}',this.mainLetter,this.putSymbolsInPlaceholders(i+''));
+        arr[dict[i]] = format('{0}.{1}', this.mainLetter, this.putSymbolsInPlaceholders(i+''));
     } 
 
     chars = [];
@@ -87,15 +100,6 @@ HuskyCompiler.prototype.octalStringtoExpression = function(octalStr) {
         }
     }
     return chars.join('+');
-};
-
-HuskyCompiler.prototype.getExpressionShortcut = function(str) {
-    var dict = this.dictionary;
-    var arr={}; 
-    for(i in dict){
-        arr[dict[i]] = this.mainLetter+'.'+i;
-    } 
-    return arr[str];
 };
 
 // the dictionary ; used both in the compiled code (by getDictionaryAsString()) and in the compiler itself
@@ -147,7 +151,7 @@ HuskyCompiler.prototype.getDictionaryAsString = function() {
 
 HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr){
     var ro = this.renameObj
-    return codeStr.replace(/(_[SM])+/g, function(match){return ro.replaceReply(match)});
+    return codeStr.replace(/(_[SM])+/g, function(match){return ro.renameExpression(match)});
 };
 
 
@@ -155,43 +159,66 @@ HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr){
 /*********** NAME REPLACER  ***********/
 
 // an object used to make names using only the given nameset
-function makeReplaceObj(names){
+function Renamer(names){
     return {
-        id : [],  // identification
-        nameSet: names, // all the names that will be used to assemble variable names 
-        dict : {}, // holds the already determined variable names
+        availLetters: names,    // all the letters than can be used. a letter can actually be more than one actuall letter, aka 'ABC'
+        renameHistory : {},     // holds the already renamed expressions
+        prevLetters : [],       // the letters that built the last expression
 
-        // creates a new name
-        incr : function () 
-        {
-            for(var i = 0;;i++)
-            {
-                var ix = this.nameSet.indexOf(this.id[i])
-                if(ix == this.nameSet.length - 1)
-                {
-                    this.id[i] = this.nameSet[0]
+        // replaces an expression with a new expression using only the availLetters 
+        // it returns the same expression when given the same expression (by storing past calls)
+        renameExpression : function (exp) { 
+            if (this.renameHistory[exp]) {
+                return this.renameHistory[exp]
+            }
+            else {
+                var newName = this.createNewName()
+                this.renameHistory[exp] = newName;
+                return newName;
+            }
+        },
+
+        // get a new name, one that was not used ever before
+        createNewName : function () {
+            this.prevLetters = this.increaseWord(this.prevLetters)
+            console.log(this.prevLetters)
+            return this.prevLetters.join('');
+        },
+
+        increaseWord : function (wordLetters){
+            if (wordLetters.length <= 0)
+                return [this.availLetters[0]]
+
+            letter = wordLetters[0];
+
+            // if not last letter available, increase it
+            if (!this.isLetterTheLastAvailable(letter)){
+                wordLetters[0] = this.getNextLetter(letter)
+            } 
+            
+            // increase the next letter. if all of the next cannot be increased, reset them and this letter.
+            else {
+                otherLetters = wordLetters.slice(1)
+                newOtherLetters = this.increaseWord(otherLetters)
+                if (newOtherLetters.length != otherLetters){
+                    letter = this.getNextLetter()
                 }
-                else
-                {
-                    this.id[i] = this.nameSet[ix + 1]
-                    break;
-                }
+                newOtherLetters.unshift(letter)
+                wordLetters = newOtherLetters
             }
-            return this.id.join('');
-        } ,
-        
-        // replaces an identifier with a new identifier using only the nameSet ; it returns the same identifier when given the same identifier (by storing past calls)
-        replaceReply : function (match) { 
-            if(this.dict[match])
-            {
-                return this.dict[match]
-            }
-            else
-            {
-                var x = this.incr()
-                this.dict[match]=x;
-                return x;
-            }
+            return wordLetters
+        },
+
+        // is the given letter the last letter available in availLetter
+        isLetterTheLastAvailable : function (letter) {
+            index = this.availLetters.indexOf(letter)
+            return index == this.availLetters.length-1
+        },
+
+        // get the next available letter after a given letter, if is last letter will return the first letter 
+        getNextLetter : function(letter) {
+            currentIndex = this.availLetters.indexOf(letter)
+            return this.availLetters[(currentIndex + 1) % this.availLetters.length]
         }
     }
 }
