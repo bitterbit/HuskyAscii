@@ -23,15 +23,15 @@ HuskyCompiler.prototype.Compile = function(javascript_code) {
 
 // compile javascript_code in a way that the code itself is contained in the variable quine_name to be accessed by the code.
 HuskyCompiler.prototype.CompileQuineable = function(javascript_code, quine_name) {
-	return this.CompileQuineableHusky(javascript_code, quine_name, this.dictionaryString);
+    return this.CompileQuineableHusky(javascript_code, quine_name, this.dictionaryString);
 };
 
 // compile quineably using a predefined dict
 HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_name, husky_dict)
 {
     // How many Slashes do you need to replace a light bulb?
-	javascript_code = format("{2}=(\"{0}\"+({3}+'').replace(/\\/\\*(?= )/g,'/*\\\\\\\\\\\\n')+';{3}()').replace(/fu.+{[^]/,'{3}={1}(\"').replace(/[^{)+/]+}/,'\")');", husky_dict.replace(/'\\\\'/g, "\\'\\\\\\\\\\\\\\\\\\\\'").replace(/'\\''/g,"\\'\\\\\\\\\\'\\'"), this.funcWrapper, quine_name, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M")) + javascript_code;
-	console.log(javascript_code)
+    javascript_code = format("{2}=(\"{0}\"+({3}+'').replace(/\\/\\*(?= )/g,'/*\\\\\\\\\\\\n')+';{3}()').replace(/fu.+{[^]/,'{3}={1}(\"').replace(/[^{)+/]+}/,'\")');", husky_dict.replace(/'\\\\'/g, "\\'\\\\\\\\\\\\\\\\\\\\'").replace(/'\\''/g,"\\'\\\\\\\\\\'\\'"), this.funcWrapper, quine_name, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M")) + javascript_code;
+    console.log(javascript_code)
     var mainCodeString = this.getExpression(javascript_code);
     return format("{4}{5}={1}(\"({1}({1}({2}+{3}+{0}+{3})()))()\");{5}()",mainCodeString, this.funcWrapper, this.returnString, this.quote, this.dictionaryString, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M"));
 }
@@ -39,29 +39,29 @@ HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_
 // father function to get an obfuscated expression.
 // converts js expression, as alert, to its equivelent obfuscated value. 
 HuskyCompiler.prototype.getExpression = function(str) {
-	var arr={};
-	
-	// building a regex that finds all the precalculated strings in the given strings
-	var regex = '/';
+    var arr={};
+    
+    // building a regex that finds all the precalculated strings in the given strings
+    var regex = '/';
     for(var i in this.dictionary){
-		var val = this.dictionary[i];
-		if(typeof(val) == "function") continue; // we do not want `function(){ ... }` in our regex
+        var val = this.dictionary[i];
+        if(typeof(val) == "function") continue; // we do not want `function(){ ... }` in our regex
         arr[val] = this.mainLetter+'.'+i;
-		if (val == '\\') val = '\\\\'; // escaping
-		regex += val + '|';
+        if (val == '\\') val = '\\\\'; // escaping
+        regex += val + '|';
     }
-	regex += '[^]/g';
+    regex += '[^]/g';
     // run regex
-	reg = eval(regex);
+    reg = eval(regex);
 
-	var that = this;
-	return this.putSymbolsInPlaceholders(str.replace(reg, function(match){
-		var expr = arr[match];
-		if(expr != undefined) 
+    var that = this;
+    return this.putSymbolsInPlaceholders(str.replace(reg, function(match){
+        var expr = arr[match];
+        if(expr != undefined) 
             return expr + '+';
-		else 
+        else 
             return that.octalStringtoExpression(that.stringToOctal(match)) + '+';
-	}).slice(0,-1));
+    }).slice(0,-1));
 }
 
 // converts a string to it octal represantation 
@@ -105,11 +105,11 @@ HuskyCompiler.prototype.octalStringtoExpression = function(octalStr) {
 // the dictionary ; used both in the compiled code (by getDictionaryAsString()) and in the compiler itself
 HuskyCompiler.prototype.generateDictionary = function() {
     _M=+[];
-	_S='\'';
+    _S='\'';
     _M_M=[];
     _M_S='';
     _M={
-		_S_S:[],
+        _S_S:[],
         _M_M_M_M:(!_M_M+_M_S)[_M],
         _S_S_S:_M++,
         _M_S_M_S:(!_M_M+_M_S)[_M],
@@ -123,13 +123,13 @@ HuskyCompiler.prototype.generateDictionary = function() {
         _M_M_S_S:({}+_M_S)[_M],
         _M_S_M:_M++,
         _M_M_S:_M++,
-		_S:([]+{})[_M],
+        _S:([]+{})[_M],
         _M_M_M:_M++,
         _M_S_S_S:_M++,
         _M_S_S_M:_M++
     };
-	_M._S+=_M._S;
-	_M._S_S=_M._S+_M._S+_M._S+_M._S+_M._S;
+    _M._S+=_M._S;
+    _M._S_S=_M._S+_M._S+_M._S+_M._S+_M._S;
     _M._S_M='\\';
     _M._M_M=(!!_M_M+_M_S)[_M._S_S_M]+_M._M_M_M_S+(!!_M_M+_M_S)[_M._S_S_S]+(!!_M_M+_M_S)[_M._S_M_S]+(!!_M_M+_M_S)[_M._S_S_M]+((_M_M[+_M_M])+_M_S)[_M._S_S_M];
     _M._M_S=_M._M_M_S_S+(({}+_M_S)+_M_S)[_M._S_S_M]+((_M_M[+_M_M])+_M_S)[_M._S_S_M]+(!_M_M+_M_S)[_M._S_M_M]+(!!_M_M+_M_S)[_M._S_S_S]+(!!_M_M+_M_S)[_M._S_S_M]+(!!_M_M+_M_S)[_M._S_M_S]+_M._M_M_S_S+(!!_M_M+_M_S)[_M._S_S_S]+(({}+_M_S)+_M_S)[_M._S_S_M]+(!!_M_M+_M_S)[_M._S_S_M];
@@ -138,7 +138,7 @@ HuskyCompiler.prototype.generateDictionary = function() {
 };
 
 HuskyCompiler.prototype.getDictionaryAsString = function() {
-	
+    
     var func = this.generateDictionary+'';
     
     var lines = func.split('\n');

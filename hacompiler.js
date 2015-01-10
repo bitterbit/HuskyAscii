@@ -11,6 +11,6 @@ HACompiler.prototype.Compile = function(jscode) {
     // TODO: add /*\ to the end of the quine lines
     //       add */ to the beginning of the lines
     //       add "  " to beginning of all lines
-
+    
     eval(finalQuinablePic);
 };
