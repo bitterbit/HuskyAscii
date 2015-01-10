@@ -1,7 +1,7 @@
 <head>
 
 <script src="huskycompiler.js"></script>
-<script src="codepicturebaker.js"></script>
+<script src="picturecodebaker.js"></script>
 <script src="hacompiler.js"></script>
 <script type="text/javascript">
 
@@ -132,36 +132,38 @@ asciiTemplate = repeatStr(asciiTemplate, 7);
   
   //var javascript = "d=document;h=0;f=function(){h=1;a=d.createElement('div');a.style.whiteSpace='pre';a.style.font='4px/4px monospace';a.style.textAlign='left';quine='/*this is not a quine*/alert(1)';a.innerText=quine;b=d.createElement('button');b.innerText='Click Me';b.onclick=function(){eval(quine)};d.body.appendChild(b);d.body.appendChild(a);console.log('One mans magic is another mans engineering - ROBERT A. HEINLEIN \\\\r\\\\nby Proud Haskeller and Mr. Bitterbit. 2014');};window.onload=f;if(d.body&&!h){f()}/*MAMAS 36 EMPIRE*/";
   javascript = "d=document;h=0;f=function(){h=1;a=d.createElement('div');a.style.whiteSpace='pre';a.style.font='4px/4px monospace';a.style.textAlign='left';a.innerText=quine;b=d.createElement('button');b.innerText='Click Me';b.onclick=function(){eval(quine)};d.body.appendChild(b);d.body.appendChild(a);console.log('One mans magic is another mans engineering - ROBERT A. HEINLEIN \\\\r\\\\nby Proud Haskeller and Mr. Bitterbit. 2014');};window.onload=f;if(d.body&&!h){f()}/*MAMAS 36 EMPIRE*/";
+  compiler = new HACompiler(new HuskyCompiler(), new CodePictureBaker(asciiTemplate, "#"))
+  result = compiler.Compile(javascript);
 
-  compiler = new HuskyCompiler();	
+  // compiler = new HuskyCompiler();    
   
-  pic_baker = new CodePictureBaker(asciiTemplate, "#");
+  // pic_baker = new CodePictureBaker(asciiTemplate, "#");
 
-  pic_dict = pic_baker.BakePartialPicture(compiler.getDictionaryAsString());
+  // pic_dict = pic_baker.BakePartialPicture(compiler.getDictionaryAsString());
 
-  finalQuinableCode = compiler.CompileQuineableHusky(javascript, "quine", pic_dict.split('\n').join('\\\\n'));
-  finalQuinablePic = pic_baker.BakePicture(finalQuinableCode);
-  eval(finalQuinablePic);
+  // finalQuinableCode = compiler.CompileQuineableHusky(javascript, "quine", pic_dict.split('\n').join('\\\\n'));
+  // finalQuinablePic = pic_baker.BakePicture(finalQuinableCode);
+  // eval(finalQuinablePic);
   //eval(compiled_code);
-	
-	
-	// function test(){
-	// 	h=false;
-	// 	d=document;
-	// 	f=function(){
-	// 		h=true;
-	// 		a=d.createElement('div');
-	// 		a.style.whiteSpace='pre';
-	// 		a.style.font = '4px/4px monospace'
-	// 		a.innerText=quine;
-	// 		d.body.appendChild(a);
-	// 		console.log('One man\'s \'magic\' is another man\'s engineering - ROBERT A. HEINLEIN');
-	// 	}
-	// 	window.onload = f;
-	// 	if(d.body && !h){
-	// 		f()
-	// 	}
-	// }
+    
+    
+    // function test(){
+    //     h=false;
+    //     d=document;
+    //     f=function(){
+    //         h=true;
+    //         a=d.createElement('div');
+    //         a.style.whiteSpace='pre';
+    //         a.style.font = '4px/4px monospace'
+    //         a.innerText=quine;
+    //         d.body.appendChild(a);
+    //         console.log('One man\'s \'magic\' is another man\'s engineering - ROBERT A. HEINLEIN');
+    //     }
+    //     window.onload = f;
+    //     if(d.body && !h){
+    //         f()
+    //     }
+    // }
 
 
   /*
@@ -194,7 +196,7 @@ asciiTemplate = repeatStr(asciiTemplate, 7);
     //husky_dict = husky_dict.replace(/\*\\\//g, "*/");
     //console.log(husky_dict)
 
-	
+    
 </script>
 </head>
 <body>
