@@ -181,7 +181,6 @@ function Renamer(names){
         // get a new name, one that was not used ever before
         createNewName : function () {
             this.prevLetters = this.increaseWord(this.prevLetters)
-            console.log(this.prevLetters)
             return this.prevLetters.join('');
         },
 
