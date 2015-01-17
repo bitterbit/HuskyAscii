@@ -35,8 +35,7 @@ HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_
 	
     var mainCodeString = this.getExpression(javascript_code);
 	
-    console.log(javascript_code)
-	console.log(mainCodeString);
+    console.log(javascript_code);
 	
     return format("{4}{5}={1}(\"({1}({1}({2}+{3}+{0}+{3})()))()\");{5}()"
 							, mainCodeString
@@ -170,11 +169,6 @@ HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr) {
     var ro = this.renameObj
     return codeStr.replace(/(_[SMK])+/g, function(match){return ro.renameExpression(match)});
 };
-
-HuskyCompiler.prototype.getVal = function(placeholder) {
-	return placeholder;
-}
-
 
 
 /*********** NAME REPLACER  ***********/
