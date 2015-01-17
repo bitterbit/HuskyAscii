@@ -3,14 +3,11 @@ function HuskyCompiler(){
     this.renameObj = Renamer(this.nameSet);
 
     this.dictionary = this.generateDictionary();
-	this.revDictionary = this.generateRevDict();
 
     this.funcWrapper = this.putSymbolsInPlaceholders("_M_K");
     this.dictionaryString = this.getDictionaryAsString();
     this.returnString = this.getExpression('return'); 
     this.quote = 'C';
-
-	co = this; /* CHANGE */
 }
 
 
@@ -157,14 +154,6 @@ HuskyCompiler.prototype.generateDictionary = function() {
 		dict[name] = eval(name);        // and so we need to store their last state.
 	}
 	return dict;
-}
-
-HuskyCompiler.prototype.generateRevDict = function() {
-	arr = {};
-	for (i in this.dictionary) {
-		arr[this.dictionary[i]] = i
-	}
-	return arr;
 }
 
 HuskyCompiler.prototype.getDictionaryAsString = function() {
