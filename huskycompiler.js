@@ -9,8 +9,7 @@ function HuskyCompiler(){
     this.dictionaryString = this.getDictionaryAsString();
     this.returnString = this.getExpression('return'); 
     
-    // CR: why not use putSymbolsInPlaceholders? 
-    this.quote = 'C'; 
+    this.quote = this.putSymbolsInPlaceholders('_S');
 }
 
 
@@ -53,7 +52,7 @@ HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_
 }
 
 // father function to get an obfuscated expression.
-// converts js expression, as alert, to its equivelent obfuscated value. 
+// converts js expression, as alert, to its equivalent obfuscated value. 
 HuskyCompiler.prototype.getExpression = function(str) {
     var arr={};
     
@@ -82,7 +81,7 @@ HuskyCompiler.prototype.getExpression = function(str) {
     }).slice(0,-1));
 }
 
-// converts a string to it octal represantation 
+// converts a string to it octal representation 
 // for example: 'H' => '\110' 
 HuskyCompiler.prototype.stringToOctal = function(str) {
     
@@ -172,8 +171,8 @@ HuskyCompiler.prototype.getDictionaryAsString = function() {
     return this.putSymbolsInPlaceholders(code);
 };
 
-// CR: could i calling this function is equal to calling Renamer.renameExpression on all expresions in codeStr?
-// maybe a better name would make it esier to understand
+// CR: could i calling this function is equal to calling Renamer.renameExpression on all expressions in codeStr?
+// maybe a better name would make it easier to understand
 HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr) {
     var ro = this.renameObj
     // CR: why SMK? cant we do A-Z 
@@ -186,7 +185,7 @@ HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr) {
 // an object used to make names using only the given nameset
 function Renamer(names){
     return {
-        availLetters: names,    // all the letters than can be used. a letter can actually be more than one actuall letter, aka 'ABC'
+        availLetters: names,    // all the letters than can be used. a letter can actually be more than one actual letter, aka 'ABC'
         renameHistory : {},     // holds the already renamed expressions
         prevLetters : [],       // the letters that built the last expression
 
