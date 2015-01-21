@@ -1,3 +1,4 @@
+
 function HuskyCompiler(){
     this.nameSet = ['A','I','C','S']
     this.renameObj = Renamer(this.nameSet);
@@ -7,7 +8,9 @@ function HuskyCompiler(){
     this.funcWrapper = this.putSymbolsInPlaceholders("_M_K");
     this.dictionaryString = this.getDictionaryAsString();
     this.returnString = this.getExpression('return'); 
-    this.quote = 'C';
+    
+    // CR: why not use putSymbolsInPlaceholders? 
+    this.quote = 'C'; 
 }
 
 
@@ -25,10 +28,13 @@ HuskyCompiler.prototype.CompileQuineable = function(javascript_code, quine_name)
 // compile quineably using a predefined dict
 HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_name, husky_dict)
 {
+    // CR: dont leave unused code in comments
+    // CR2:  this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M"))
+    // What does _M_S_S_M_S_M_M_S_M mean, could i just replace it with any random sequence of _X?
+
     // How many Slashes do you need to replace a light bulb?
     javascript_code = format("{2}=(\"{0}\"+({3}+\\'\\').replace(/\\/\\*(?= )/g,\\'/*\\\\\\\\\\\\n\\')+\\';{3}()\\').replace(/fu.+{[^]/,\\'{3}={1}(\"\\').replace(/[^{)+/]+}/,\\'\")\\');"
-							, //husky_dict.replace(/'\\\\'/g, "\\'\\\\\\\\\\\\\\\\\\\'").replace(/'\\''/g,"\\'\\\\\\\\\\'\\'").replace(/''/g,"\\'\\'")
-							  escape(escape(husky_dict,'"'),"'")
+							, escape(escape(husky_dict,'"'),"'")
 							, this.funcWrapper
 							, quine_name
 							, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M")) + javascript_code;
@@ -114,27 +120,29 @@ HuskyCompiler.prototype.octalStringtoExpression = function(octalStr) {
     return chars.join('+');
 };
 
+// CR: nice but no as elegant as 
 HuskyCompiler.prototype.namesDictionary = {
     _M:"+[]",
     _S:"'\\''", // '\''
     _M_M:"[]",
     _M_S:"''",
-        _M_M_M_M:"(!_M_M+_M_S)[_M]",
-        _S_S_S:"_M++",
-        _M_S_M_S:"(!_M_M+_M_S)[_M]",
-        _S_S_M:"_M++",
-        _M_S_M_M:"({}+_M_S)[_M]",
-        _M_M_S_M:"((_M_M[+_M_M])+_M_S)[_M]",
-        _S_M_S:"_M++",
-        _S_M_M:"_M++",
-        _M_M_M_S:"(!_M_M+_M_S)[_M]",
-        _M_S_S:"_M++",
-        _M_M_S_S:"({}+_M_S)[_M]",
-        _M_S_M:"_M++",
-        _M_M_S:"_M++",
-        _S_S_S_S:"([]+{})[_M]",
-        _M_M_M:"_M++",
-        _M_S_S_S:"_M++",
+
+    _M_M_M_M:"(!_M_M+_M_S)[_M]",
+    _S_S_S:"_M++",
+    _M_S_M_S:"(!_M_M+_M_S)[_M]",
+    _S_S_M:"_M++",
+    _M_S_M_M:"({}+_M_S)[_M]",
+    _M_M_S_M:"((_M_M[+_M_M])+_M_S)[_M]",
+    _S_M_S:"_M++",
+    _S_M_M:"_M++",
+    _M_M_M_S:"(!_M_M+_M_S)[_M]",
+    _M_S_S:"_M++",
+    _M_M_S_S:"({}+_M_S)[_M]",
+    _M_S_M:"_M++",
+    _M_M_S:"_M++",
+    _S_S_S_S:"([]+{})[_M]",
+    _M_M_M:"_M++",
+    _M_S_S_S:"_M++",
     
     _S_S:"(_S_S=_S_S_S_S+_S_S_S_S,_S_S+_S_S+_S_S+_S_S)",
     _S_M:"'\\\\'", // '\\'
@@ -164,9 +172,11 @@ HuskyCompiler.prototype.getDictionaryAsString = function() {
     return this.putSymbolsInPlaceholders(code);
 };
 
-
+// CR: could i calling this function is equal to calling Renamer.renameExpression on all expresions in codeStr?
+// maybe a better name would make it esier to understand
 HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr) {
     var ro = this.renameObj
+    // CR: why SMK? cant we do A-Z 
     return codeStr.replace(/(_[SMK])+/g, function(match){return ro.renameExpression(match)});
 };
 
