@@ -5,18 +5,18 @@ function HuskyCompiler(){
 
     this.dictionary = this.generateDictionary();
 
-    this.funcWrapper = this.putSymbolsInPlaceholders("_M_K");
     this.dictionaryString = this.getDictionaryAsString();
-    this.returnString = this.getExpression('return'); 
+    this.funcWrapper = this.putSymbolsInPlaceholders("_Function");
+    this.returnString = this.putSymbolsInPlaceholders('_returnS'); 
     
-    this.quote = this.putSymbolsInPlaceholders('_S');
+    this.quote = this.putSymbolsInPlaceholders('_quote');
 }
 
 
 HuskyCompiler.prototype.Compile = function(javascript_code) {
-    var mainCodeString = this.getExpression(javascript_code);
+    var mainCodeString = this.getExpression(escape(javascript_code,"'"));
     var wrappedMainCode = format("{1}({1}({2}+{3}+{0}+{3})())()",mainCodeString, this.funcWrapper, this.returnString, this.quote);
-    return this.dictionaryString+wrappedMainCode; 
+    return this.dictionaryString + wrappedMainCode; 
 };
 
 // compile javascript_code in a way that the code itself is contained in the variable quine_name to be accessed by the code.
@@ -27,16 +27,12 @@ HuskyCompiler.prototype.CompileQuineable = function(javascript_code, quine_name)
 // compile quineably using a predefined dict
 HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_name, husky_dict)
 {
-    // CR: dont leave unused code in comments
-    // CR2:  this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M"))
-    // What does _M_S_S_M_S_M_M_S_M mean, could i just replace it with any random sequence of _X?
-
     // How many Slashes do you need to replace a light bulb?
     javascript_code = format("{2}=(\"{0}\"+({3}+\\'\\').replace(/\\/\\*(?= )/g,\\'/*\\\\\\\\\\\\n\\')+\\';{3}()\\').replace(/fu.+{[^]/,\\'{3}={1}(\"\\').replace(/[^{)+/]+}/,\\'\")\\');"
 							, escape(escape(husky_dict,'"'),"'")
 							, this.funcWrapper
 							, quine_name
-							, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M")) + javascript_code;
+							, this.putSymbolsInPlaceholders("_unusedName")) + escape(javascript_code,"'");
 	
     var mainCodeString = this.getExpression(javascript_code);
 	
@@ -48,11 +44,12 @@ HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_
 							, this.returnString
 							, this.quote
 							, this.dictionaryString
-							, this.putSymbolsInPlaceholders("_M_S_S_M_S_M_M_S_M"));
+							, this.putSymbolsInPlaceholders("_unusedName"));
 }
 
 // father function to get an obfuscated expression.
 // converts js expression, as alert, to its equivalent obfuscated value. 
+// should always satisfy unescape(eval(getExpression(s))) = s
 HuskyCompiler.prototype.getExpression = function(str) {
     var arr={};
     
@@ -60,7 +57,7 @@ HuskyCompiler.prototype.getExpression = function(str) {
     var regex = '';
     for(var i in this.dictionary){
         var val = this.dictionary[i];
-        if(typeof(val) == "function" || val == "") continue; // we do not want `function(){ ... }` in our regex, nor we want an empty string
+        if(typeof(val) == "function" || val == "" || val == "'") continue; // we do not want `function(){ ... }` in our regex, nor we want an empty string.
         arr[val] = i;
         if (val == '\\') val = '\\\\'; // escaping
         regex += val + '|';
@@ -74,6 +71,8 @@ HuskyCompiler.prototype.getExpression = function(str) {
     var that = this;
     return this.putSymbolsInPlaceholders(str.replace(regex, function(match){
         var expr = arr[match];
+		if(match == "'")
+			return '_quote+'; // escaping problems
         if(expr != undefined) 
             return expr + '+';
         else 
@@ -119,36 +118,35 @@ HuskyCompiler.prototype.octalStringtoExpression = function(octalStr) {
     return chars.join('+');
 };
 
-// CR: nice but no as elegant as 
 HuskyCompiler.prototype.namesDictionary = {
-    _M:"+[]",
-    _S:"'\\''", // '\''
-    _M_M:"[]",
-    _M_S:"''",
+    _M:"+[]",       // used a lot so give it a small name
+	               // has a value of 9 at the end
+    _A:"[]",        // empty A-rray
+    _S:"''",        // empty S-tring
+    _slash:"'\\\\'", // '\\'
 
-    _M_M_M_M:"(!_M_M+_M_S)[_M]",
-    _S_S_S:"_M++",
-    _M_S_M_S:"(!_M_M+_M_S)[_M]",
-    _S_S_M:"_M++",
-    _M_S_M_M:"({}+_M_S)[_M]",
-    _M_M_S_M:"((_M_M[+_M_M])+_M_S)[_M]",
-    _S_M_S:"_M++",
-    _S_M_M:"_M++",
-    _M_M_M_S:"(!_M_M+_M_S)[_M]",
-    _M_S_S:"_M++",
-    _M_M_S_S:"({}+_M_S)[_M]",
-    _M_S_M:"_M++",
-    _M_M_S:"_M++",
-    _S_S_S_S:"([]+{})[_M]",
-    _M_M_M:"_M++",
-    _M_S_S_S:"_M++",
+    _f:"(!_A+_S)[_M]",
+    _zero:"_M++",
+    _a:"(!_A+_S)[_M]",
+    _one:"_M++",
+    _b:"({}+_S)[_M]",
+    _d:"((_A[_zero])+_S)[_M]",
+    _two:"_M++",
+    _three:"_M++",
+    _e:"(!_A+_S)[_M]",
+    _four:"_M++",
+    _c:"({}+_S)[_M]",
+    _five:"_M++",
+    _six:"_M++",
+    _qSpace:"([]+{})[_M]",
+    _space:"(_qSpace=(_qSpace+=(_space=_qSpace))+_qSpace+_qSpace+_qSpace,_space)",
+    _seven:"_M++",
+    _eight:"_M++",
     
-    _S_S:"(_S_S=_S_S_S_S+_S_S_S_S,_S_S+_S_S+_S_S+_S_S)",
-    _S_M:"'\\\\'", // '\\'
-    _M_M_K:"(!!_M_M+_M_S)[_S_S_M]+_M_M_M_S+(!!_M_M+_M_S)[_S_S_S]+(!!_M_M+_M_S)[_S_M_S]+(!!_M_M+_M_S)[_S_S_M]+((_M_M[+_M_M])+_M_S)[_S_S_M]",
-    _M_S_K:"_M_M_S_S+(({}+_M_S)+_M_S)[_S_S_M]+((_M_M[+_M_M])+_M_S)[_S_S_M]+(!_M_M+_M_S)[_S_M_M]+(!!_M_M+_M_S)[_S_S_S]+(!!_M_M+_M_S)[_S_S_M]+(!!_M_M+_M_S)[_S_M_S]+_M_M_S_S+(!!_M_M+_M_S)[_S_S_S]+(({}+_M_S)+_M_S)[_S_S_M]+(!!_M_M+_M_S)[_S_S_M]",
-    _M_K:"_S_S_M[_M_S_K][_M_S_K]"
-    
+    _quote:"'\\''", // '\''
+    _returnS:"(!!_A+_S)[_one]+_e+(!!_A+_S)[_zero]+(!!_A+_S)[_two]+(!!_A+_S)[_one]+((_A[_zero])+_S)[_one]",
+    _constr:"_c+(({}+_S)+_S)[_one]+((_A[_zero])+_S)[_one]+(!_A+_S)[_three]+(!!_A+_S)[_zero]+(!!_A+_S)[_one]+(!!_A+_S)[_two]+_c+(!!_A+_S)[_zero]+(({}+_S)+_S)[_one]+(!!_A+_S)[_one]",
+    _Function:"_one[_constr][_constr]"
 };
 
 HuskyCompiler.prototype.generateDictionary = function() {
@@ -176,7 +174,7 @@ HuskyCompiler.prototype.getDictionaryAsString = function() {
 HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr) {
     var ro = this.renameObj
     // CR: why SMK? cant we do A-Z 
-    return codeStr.replace(/(_[SMK])+/g, function(match){return ro.renameExpression(match)});
+    return codeStr.replace(/_[a-zA-Z]+/g, function(match){return ro.renameExpression(match)});
 };
 
 
