@@ -71,8 +71,6 @@ HuskyCompiler.prototype.getExpression = function(str) {
     var that = this;
     return this.putSymbolsInPlaceholders(str.replace(regex, function(match){
         var expr = arr[match];
-		if(match == "'")
-			return '_quote+'; // escaping problems
         if(expr != undefined) 
             return expr + '+';
         else 
@@ -120,7 +118,7 @@ HuskyCompiler.prototype.octalStringtoExpression = function(octalStr) {
 
 HuskyCompiler.prototype.namesDictionary = {
     _M:"+[]",       // used a lot so give it a small name
-	               // has a value of 9 at the end
+	                // has a value of 9 at the end
     _A:"[]",        // empty A-rray
     _S:"''",        // empty S-tring
     _slash:"'\\\\'", // '\\'
