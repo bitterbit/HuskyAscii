@@ -39,11 +39,11 @@ HuskyCompiler.prototype.CompileQuineableHusky = function(javascript_code, quine_
     console.log(javascript_code);
 	
     return format("{4}{5}={1}(\"({1}({1}({2}+{3}+{0}+{3})()))()\");{5}()"
-							, mainCodeString
-							, this.funcWrapper
-							, this.returnString
-							, this.quote
-							, this.dictionaryString
+							, mainCodeString         //0
+							, this.funcWrapper       //1
+							, this.returnString      //2
+							, this.quote             //3
+							, this.dictionaryString  //4
 							, this.putSymbolsInPlaceholders("_unusedName"));
 }
 
@@ -121,6 +121,7 @@ HuskyCompiler.prototype.namesDictionary = {
 	                // has a value of 9 at the end
     _A:"[]",        // empty A-rray
     _S:"''",        // empty S-tring
+    _Q:"\\\'",
     _slash:"'\\\\'", // '\\'
 
     _f:"(!_A+_S)[_M]",
@@ -140,7 +141,7 @@ HuskyCompiler.prototype.namesDictionary = {
     _space:"(_qSpace=(_qSpace+=(_space=_qSpace))+_qSpace+_qSpace+_qSpace,_space)",
     _seven:"_M++",
     _eight:"_M++",
-    
+
     _quote:"'\\''", // '\''
     _returnS:"(!!_A+_S)[_one]+_e+(!!_A+_S)[_zero]+(!!_A+_S)[_two]+(!!_A+_S)[_one]+((_A[_zero])+_S)[_one]",
     _constr:"_c+(({}+_S)+_S)[_one]+((_A[_zero])+_S)[_one]+(!_A+_S)[_three]+(!!_A+_S)[_zero]+(!!_A+_S)[_one]+(!!_A+_S)[_two]+_c+(!!_A+_S)[_zero]+(({}+_S)+_S)[_one]+(!!_A+_S)[_one]",
@@ -171,7 +172,6 @@ HuskyCompiler.prototype.getDictionaryAsString = function() {
 // maybe a better name would make it easier to understand
 HuskyCompiler.prototype.putSymbolsInPlaceholders = function(codeStr) {
     var ro = this.renameObj
-    // CR: why SMK? cant we do A-Z 
     return codeStr.replace(/_[a-zA-Z]+/g, function(match){return ro.renameExpression(match)});
 };
 

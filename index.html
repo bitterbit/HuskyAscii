@@ -18,6 +18,12 @@ var asciiTemplateGAL = (function(){/*
   ###############   ###         ###   ###############
 */}+'').split('\n').slice(1,-1).join('\n');
 
+var code = "A=+[];I='\'';C=[];S='';A={AA:[],IA:(!C+S)[A],CA:A++,SA:(!C+S)[A],AI:A++,II:({}+S)[A],CI:((C[+C])+S)[A],SI:A++,AC:A++,IC:(!C+S)[A],CC:A++,SC:({}+S)[A],AS:A++,IS:A++,I:([]+{})[A],CS:A++,SS:A++,AAA:A++};A.I+=A.I;A.AA=A.I+A.I+A.I+A.I+A.I;A.IAA='\\';A.C=(!!C+S)[A.AI]+A.IC+(!!C+S)[A.CA]+(!!C+S)[A.SI]+(!!C+S)[A.AI]+((C[+C])+S)[A.AI];A.S=A.SC+(({}+S)+S)[A.AI]+((C[+C])+S)[A.AI]+(!C+S)[A.AC]+(!!C+S)[A.CA]+(!!C+S)[A.AI]+(!!C+S)[A.SI]+A.SC+(!!C+S)[A.CA]+(({}+S)+S)[A.AI]+(!!C+S)[A.AI];A.A=A.AI[A.S][A.S];A.A(A.A(A.C+I+A.SA+A.IAA+A.AI+A.AS+A.CC+A.IC+A.IAA+A.AI+A.IS+A.SI+A.IAA+A.AI+A.IS+A.CC+A.IAA+A.AS+A.CA+A.IAA+A.CC+A.CS+A.IAA+A.AI+A.AI+A.CA+A.IC+A.IAA+A.AI+A.AS+A.CC+A.IAA+A.AI+A.AS+A.CC+A.IAA+A.AI+A.AS+A.CS+A.IAA+A.CC+A.CA+A.IAA+A.AI+A.CA+A.CC+A.IAA+A.AI+A.AS+A.AI+A.IAA+A.AI+A.CC+A.CS+A.IAA+A.AI+A.AS+A.AI+A.IAA+A.AI+A.IS+A.CC+A.SA+A.IAA+A.AI+A.AS+A.CC+A.IAA+A.CC+A.CA+A.IAA+A.AI+A.SI+A.CS+A.IAA+A.AI+A.AS+A.CA+A.IAA+A.AI+A.AS+A.AI+A.IAA+A.AI+A.IS+A.AC+A.IAA+A.AI+A.IS+A.CA+A.IC+A.IAA+A.AI+A.IS+A.SI+A.IAA+A.CC+A.AI+A.IAA+A.CC+A.CS+A.IAA+A.AS+A.AI+I)())()"
+
+var baker = new CodePictureBaker(asciiTemplateGAL, '#');
+console.log(baker.BakePicture(code))
+//console.log(baker, code)
+
 var asciiTemplate = (function(){/*
 
   ############################################################  
@@ -131,12 +137,17 @@ asciiTemplate = repeatStr(asciiTemplate, 7);
 // ------------------------------------------------ MAIN CODE  ------------------------------------------------
   
   //var javascript = "d=document;h=0;f=function(){h=1;a=d.createElement('div');a.style.whiteSpace='pre';a.style.font='4px/4px monospace';a.style.textAlign='left';quine='/*this is not a quine*/alert(1)';a.innerText=quine;b=d.createElement('button');b.innerText='Click Me';b.onclick=function(){eval(quine)};d.body.appendChild(b);d.body.appendChild(a);console.log('One mans magic is another mans engineering - ROBERT A. HEINLEIN \\\\r\\\\nby Proud Haskeller and Mr. Bitterbit. 2014');};window.onload=f;if(d.body&&!h){f()}/*MAMAS 36 EMPIRE*/";
-  javascript = "d=document;h=0;f=function(){h=1;a=d.createElement('div');a.style.whiteSpace='pre';a.style.font='4px/4px monospace';a.style.textAlign='left';a.innerText=quine;b=d.createElement('button');b.innerText='Click Me';b.onclick=function(){eval(quine)};d.body.appendChild(b);d.body.appendChild(a);console.log('One mans magic is another mans engineering - ROBERT A. HEINLEIN \\\\r\\\\nby Proud Haskeller and Mr. Bitterbit. 2014');};window.onload=f;if(d.body&&!h){f()}/*MAMAS 36 EMPIRE*/";
-  compiler = new HACompiler(new HuskyCompiler(), new CodePictureBaker(asciiTemplate, "#"))
-  result = compiler.Compile(javascript);
-
-  // compiler = new HuskyCompiler();    
+  //javascript = "d=document;h=0;f=function(){h=1;a=d.createElement('div');a.style.whiteSpace='pre';a.style.font='4px/4px monospace';a.style.textAlign='left';a.innerText=quine;b=d.createElement('button');b.innerText='Click Me';b.onclick=function(){eval(quine)};d.body.appendChild(b);d.body.appendChild(a);console.log('One mans magic is another mans engineering - ROBERT A. HEINLEIN \\\\r\\\\nby Proud Haskeller and Mr. Bitterbit. 2014');};window.onload=f;if(d.body&&!h){f()}/*MAMAS 36 EMPIRE*/";
   
+  // console.log(new HuskyCompiler())
+  // compiler = new HACompiler(new HuskyCompiler(), new CodePictureBaker(asciiTemplate, "#"))
+  // result = compiler.Compile(javascript);
+  // console.log(result)
+  // eval(result)
+  
+  //compiler = new HuskyCompiler();    
+  //console.log(compiler.Compile(javascript))
+
   // pic_baker = new CodePictureBaker(asciiTemplate, "#");
 
   // pic_dict = pic_baker.BakePartialPicture(compiler.getDictionaryAsString());

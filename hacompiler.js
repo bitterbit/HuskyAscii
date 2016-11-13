@@ -4,9 +4,9 @@ function HACompiler(huskyCompiler, pictureBaker){
 }
 
 HACompiler.prototype.Compile = function(jscode) {  
-    var pic_dictionary = this.pictureBaker.BakePartialPicture(compiler.getDictionaryAsString());
-    var finalQuinableCode = compiler.CompileQuineableHusky(javascript, "quine", pic_dictionary.split('\n').join('\\\\n'));
-    var finalQuinablePic = pic_baker.BakePicture(finalQuinableCode);
+    var pic_dictionary = this.pictureBaker.BakePartialPicture(this.huskyCompiler.getDictionaryAsString());
+    var finalQuinableCode = this.huskyCompiler.CompileQuineableHusky(javascript, "quine", pic_dictionary.split('\n').join('\\\\n'));
+    var finalQuinablePic = this.pictureBaker.BakePicture(finalQuinableCode);
 
     // TODO: add /*\ to the end of the quine lines
     //       add */ to the beginning of the lines
